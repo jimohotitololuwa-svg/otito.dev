@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Otitololuwa Jimoh • Web Developer & Tech Tutor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Global Reset & Variables ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --dark-bg: #0f172a;
+      --light-bg: #ffffff;
+      --card-dark: #1e293b;
+      --card-light: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #f1f5f9;
+      --text-muted-dark: #94a3b8;
+      --text-muted-light: #64748b;
+      --border-color: #e2e8f0;
+      --gradient-1: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+      --gradient-2: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+    }
+
+    body {
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      background: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--text-light);
+    }
+
+    main {
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      flex: 1;
+    }
+
+    section {
+      padding: 5rem 0;
+      display: none;
+      opacity: 0;
+      animation: fadeIn 0.45s ease forwards;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      section {
+        animation: none;
+        opacity: 1;
+      }
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    body.dark .navbar {
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: transform 0.3s;
+    }
+
+    body.dark .theme-toggle {
+      color: var(--text-light);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(20deg) scale(1.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    body.dark .hamburger {
+      color: var(--text-light);
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: currentColor;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--text-dark);
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    body.dark .nav-links a {
+      color: var(--text-light);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-1);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* ===== Hero Section ===== */
+    #hero {
+      padding-top: 6rem;
+      padding-bottom: 4rem;
+    }
+
+    .hero-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-role {
+      font-size: 1.3rem;
+      font-family: 'Space Mono', monospace;
+      background: var(--gradient-2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+      margin: 0.5rem 0 1.5rem;
+      min-height: 2rem;
+    }
+
+    .cursor {
+      animation: blink 1s step-end infinite;
+      opacity: 1;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .brand-statement {
+      font-size: 1.1rem;
+      color: var(--text-muted-dark);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    body.dark .brand-statement {
+      color: var(--text-muted-dark);
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+
+    body.dark .btn-outline {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    body.dark .btn-outline:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .hero-image {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-photo {
+      width: 350px;
+      height: 350px;
+      border-radius: 20px;
+      object-fit: cover;
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+      border: 3px solid var(--primary);
+      transition: all 0.3s;
+    }
+
+    .profile-photo:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 30px 80px rgba(99, 102, 241, 0.4);
+    }
+
+    /* ===== Section Titles ===== */
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -20px;
+      width: 60px;
+      height: 5px;
+      background: var(--gradient-1);
+      border-radius: 10px;
+    }
+
+    /* ===== About Section ===== */
+    .about-text {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 2px solid var(--border-color);
+      font-size: 1.1rem;
+      line-height: 1.9;
+      max-width: 700px;
+    }
+
+    body.dark .about-text {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    /* ===== Skills Section ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .skill-card {
+      background: var(--light-bg);
+      border: 2px solid var(--border-color);
+      padding: 2rem 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    body.dark .skill-card {
+      background: var(--card-dark);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .skill-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+    }
+
+    .skill-icon {
+      font-size: 2.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .skill-card h3 {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* ===== Contact Section ===== */
+    .contact-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .contact-card {
+      background: var(--light-bg);
+      padding: 2.5rem 2rem;
+      border-radius: 15px;
+      border: 2px solid var(--border-color);
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    body.dark .contact-card {
+      background: var(--card-dark);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .contact-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--primary);
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.2);
+    }
+
+    .contact-icon {
+      font-size: 3rem;
+      background: var(--gradient-2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .contact-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .contact-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    body.dark .contact-link {
+      color: var(--accent);
+    }
+
+    .contact-link:hover {
+      transform: scale(1.05);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      width: 45px;
+      height: 45px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    body.dark .social-link {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .social-link:hover {
+      background: var(--primary);
+      color: white;
+      transform: rotate(360deg);
+    }
+
+    body.dark .social-link:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      text-align: center;
+      padding: 3rem 0 1.5rem;
+      color: var(--text-muted-light);
+      border-top: 2px solid var(--border-color);
+      margin-top: 3rem;
+    }
+
+    body.dark .footer {
+      border-top-color: rgba(148, 163, 184, 0.2);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      main {
+        padding: 0 1.5rem;
+      }
+
+      section {
+        padding: 3rem 0;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 70%;
+        max-width: 300px;
+        flex-direction: column;
+        background: var(--light-bg);
+        gap: 2rem;
+        padding: 7rem 2rem;
+        transition: 0.35s ease;
+        z-index: 99;
+      }
+
+      body.dark .nav-links {
+        background: var(--dark-bg);
+      }
+
+      .nav-links.active {
+        right: 0;
+      }
+
+      .hero-container {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-photo {
+        width: 280px;
+        height: 280px;
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 1rem 1.5rem;
+      }
+
+      .logo {
+        font-size: 1.4rem;
+      }
+
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+
+      .nav-links {
+        gap: 1.5rem;
+        padding: 6rem 1.5rem;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .btn-primary, .btn-outline {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Otito<span style="color: var(--secondary);">.</span>Dev</div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fas fa-sun"></i>
+      </button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#vision" class="nav-link">Vision</a></li>
+      <li><a href="#skills" class="nav-link">Skills</a></li>
+      <li><a href="#services" class="nav-link">What I Do</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section id="hero">
+      <div class="hero-container">
+        <div class="hero-text">
+          <h1>Jimoh John Otitololuwa</h1>
+          <div class="hero-role">
+            <i class="fas fa-code"></i> <span id="typing-text"></span><span class="cursor">|</span>
+          </div>
+          <p class="brand-statement">
+            I build clean, functional websites and help young people understand the tech behind them. Code and teaching, side by side — because the best way to grow this industry is to bring more people into it.
+          </p>
+          <div class="hero-buttons">
+            <a href="#contact" class="btn-primary">
+              <i class="fas fa-paper-plane"></i> Get In Touch
+            </a>
+            <a href="#vision" class="btn-outline">
+              <i class="fas fa-compass"></i> Learn More
+            </a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="ChatGPT Image Apr 30, 2026, 07_58_26 PM.png" alt="Otitololuwa Jimoh" class="profile-photo">
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about">
+      <h2>About Me</h2>
+      <div class="about-text">
+        <p><i class="fas fa-user-tie"></i> Hi! I'm a passionate web developer and tech educator dedicated to crafting beautiful, responsive web applications. I believe in writing clean, maintainable code and explaining complex concepts in simple terms. Whether building from scratch or optimizing existing projects, I focus on delivering solutions that are both functional and user-friendly.</p>
+      </div>
+    </section>
+
+    <!-- VISION SECTION -->
+    <section id="vision">
+      <h2>My Vision</h2>
+      <div class="about-text">
+        <p><i class="fas fa-seedling"></i> My vision is to empower young people like me to see technology not as something distant or intimidating, but as a tool they can pick up and shape their own future with. I want to help close the gap between curiosity and capability — turning "I wish I knew how to build that" into "I built that."</p>
+        <p style="margin-top: 1.2rem;">Growing up figuring this out mostly on my own taught me that the right explanation at the right time changes everything. That's why I tutor as seriously as I build: every young person deserves someone who will break down the confusing parts, answer the "obvious" questions without judgment, and show them that a career in tech is genuinely within reach.</p>
+      </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section id="skills">
+      <h2>Skills & Expertise</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <i class="fas fa-code skill-icon"></i>
+          <h3>HTML/CSS</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-js-square skill-icon"></i>
+          <h3>JavaScript</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-database skill-icon"></i>
+          <h3>SQL</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-python skill-icon"></i>
+          <h3>Python</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-chalkboard-user skill-icon"></i>
+          <h3>Teaching</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-palette skill-icon"></i>
+          <h3>UI/UX Design</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-mobile-alt skill-icon"></i>
+          <h3>Responsive</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-cogs skill-icon"></i>
+          <h3>Web Tools</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT I DO / SERVICES SECTION -->
+    <section id="services">
+      <h2>What I Do</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <i class="fas fa-laptop-code skill-icon"></i>
+          <h3>Web Development</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-chalkboard-user skill-icon"></i>
+          <h3>1-on-1 Tech Tutoring</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-users skill-icon"></i>
+          <h3>Coding Workshops for Beginners</h3>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-route skill-icon"></i>
+          <h3>Career Guidance in Tech</h3>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 3rem;">How I Work</h2>
+      <div class="about-text">
+        <p><i class="fas fa-lightbulb"></i> I keep things simple: understand what you're trying to achieve, explain the "why" behind every concept (not just the "how"), and build or teach in small, confident steps rather than overwhelming jargon. Whether I'm writing code for a client or sitting down with a student, the goal is the same — leave you with something that works and an understanding of how it works.</p>
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact">
+      <h2>Get In Touch</h2>
+      <div class="cta-box" style="text-align: left; padding: 0; margin-bottom: 3rem;">
+        <p style="font-size: 1.1rem; color: var(--text-muted-light); max-width: 700px; margin: 0;">Whether you need a website built or want someone to walk you through how tech actually works, I'm glad to help. Let's talk about what you're trying to do.</p>
+      </div>
+      <div class="contact-info">
+        <div class="contact-card">
+          <i class="fas fa-mobile-alt contact-icon"></i>
+          <h3>Phone</h3>
+          <a href="tel:+2349047795526" class="contact-link">+234 904 779 5526</a>
+        </div>
+        <div class="contact-card">
+          <i class="fas fa-envelope contact-icon"></i>
+          <h3>Email</h3>
+          <a href="mailto:jimohotitololuwa@gmail.com" class="contact-link">jimohotitololuwa@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <i class="fas fa-share-alt contact-icon"></i>
+          <h3>Connect With Me</h3>
+          <div class="social-links">
+            <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" title="Portfolio"><i class="fas fa-globe"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><i class="fas fa-copyright"></i> <span id="currentYear"></span> Jimoh John Otitololuwa. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // ===== Theme Toggle =====
+    const themeToggle = document.getElementById('themeToggle');
+
+    function updateThemeIcon() {
+      const isDark = document.body.classList.contains('dark');
+      themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    }
+
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+      }
+      updateThemeIcon();
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeIcon();
+    });
+
+    // ===== Mobile Menu Toggle =====
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navLinks.classList.remove('active');
+      });
+    });
+
+    // ===== Typing Animation =====
+    const typingText = document.getElementById('typing-text');
+    const words = ['Web Developer', 'Tech Educator', 'Problem Solver', 'Creative Coder'];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeAnimation() {
+      const currentWord = words[wordIndex];
+      
+      if (isDeleting) {
+        charIndex--;
+      } else {
+        charIndex++;
+      }
+      
+      typingText.textContent = currentWord.substring(0, charIndex);
+      
+      let typeSpeed = isDeleting ? 50 : 100;
+      
+      if (!isDeleting && charIndex === currentWord.length) {
+        typeSpeed = 2000;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+        typeSpeed = 300;
+      }
+      
+      setTimeout(typeAnimation, typeSpeed);
+    }
+
+    typeAnimation();
+
+    // ===== Page Switching (no scrolling — sections act as pages) =====
+    const sections = document.querySelectorAll('main > section');
+    const navLinkEls = document.querySelectorAll('.nav-link');
+
+    function showPage(id, updateHash = true) {
+      const target = document.getElementById(id);
+      if (!target) return;
+
+      sections.forEach(section => {
+        section.classList.remove('active');
+        section.style.animation = 'none';
+      });
+
+      // restart the fade-in animation on the new active section
+      target.classList.add('active');
+      void target.offsetWidth; // reflow to restart animation
+      target.style.animation = '';
+
+      navLinkEls.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+
+      if (updateHash) {
+        history.replaceState(null, '', '#' + id);
+      }
+
+      hamburgerBtn.classList.remove('active');
+      navLinks.classList.remove('active');
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const id = this.getAttribute('href').slice(1);
+        showPage(id);
+      });
+    });
+
+    window.addEventListener('popstate', () => {
+      const id = window.location.hash.slice(1) || 'hero';
+      showPage(id, false);
+    });
+
+    // ===== Year in Footer =====
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // ===== Initialize =====
+    loadTheme();
+    showPage(window.location.hash.slice(1) || 'hero', false);
+  </script>
+</body>
+</html>
